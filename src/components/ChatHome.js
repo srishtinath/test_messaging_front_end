@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import ChatRoom from './ChatRoom';
+import { ActionCable } from 'react-actioncable-provider';
+import { API_ROOT } from '../constants';
+import NewChatRoomForm from './NewChatRoomForm';
+import MessagesArea from './MessagesArea';
+import Cable from './Cable';
 
-const apiUrl = 'http://localhost:3000'
+import ChatRoom from './ChatRoom';
 
 const ChatHome = (props) => {
     const [chatRooms, setChatRooms] = useState([])
@@ -9,33 +13,43 @@ const ChatHome = (props) => {
     const [currentRoomId, setCurrentRoom] = useState(0)
     
     useEffect(() => {
-        fetch(`${apiUrl}/chat_rooms`)
+        fetch(`${API_ROOT}/chat_rooms`)
         .then(response => response.json())
         .then(chatRoomsObject => {
-            console.log(chatRoomsObject)
             setChatRooms(chatRoomsObject)
         })
     }, [])
 
     const setChatRoom = (e) => {
-        console.log(e.target.value)
         setCurrentRoom(e.target.value)
         setEnter(true)
     }
 
+    const handleClick = (id) => {
+        setCurrentRoom(id)
+    };
+
+    const handleReceivedConversation = (e) => {
+        console.log(e.target)
+    }
+    const handleReceivedMessage = (e) => {
+        console.log(e.target)
+    }
+
     return ( 
     <div>
-        {enterRoom ? 
-        <ChatRoom currentRoom={currentRoomId} setEnter={setEnter}/>
-        :
-        <div id="chat-rooms-div">
-            <form id="new-chat-room-form">
-                <h3>Create a New Chat Room:</h3>
-                <label>Chat Room Name: </label>
-                <input type="text" />
-                <button type="submit">Create New Chat Room</button>
-            </form>
-            <h3>All Chat Rooms:</h3>
+       <div className="conversationsList">
+        <ActionCable
+          channel={{ channel: 'ChatRoomsChannel' }}
+          onReceived={handleReceivedConversation}
+        />
+        {chatRooms.length ? (
+          <Cable
+            chatrooms={chatRooms}
+            handleReceivedMessage={handleReceivedMessage}
+          />
+        ) : null}
+        <h3>All Chat Rooms:</h3>
             <div id="chat-rooms-list">
                 <ul>
                     {chatRooms ? 
@@ -47,9 +61,12 @@ const ChatHome = (props) => {
                     }
                 </ul>
             </div>
-        </div>
-        }
-    </div> );
+            <NewChatRoomForm />
+            {currentRoomId ? (
+            <MessagesArea currentRoomId={currentRoomId} />
+            ) : null}
+      </div>
+    </div>)
 }
  
 export default ChatHome;

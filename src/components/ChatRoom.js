@@ -7,7 +7,8 @@ function createChatRoomWebsocketConnection(chatRoomId) {
     // Creates the new websocket connection
     const socket = new WebSocket(webSocketUrl);
 
-        // When the connection is 1st created, this code runs subscribing the clien to a specific chatroom stream in the ChatRoomChannel
+        // When the connection is 1st created, this code runs subscribing the clien
+        // to a specific chatroom stream in the ChatRoomChannel
         socket.onopen = function(event) {
             console.log('WebSocket is connected.');
 
@@ -48,7 +49,7 @@ function createChatRoomWebsocketConnection(chatRoomId) {
         
         // When an error occurs through the websocket connection, this code is run printing the error message
         socket.onerror = function(error) {
-            console.log('WebSocket Error: ' + error);
+            console.log(error);
         };
 }
 
@@ -71,7 +72,7 @@ const ChatRoom = (props) => {
     const gobackmenu = () => {
         props.setEnter(false)
     }
-    
+
     createChatRoomWebsocketConnection()
     return ( 
         <div>

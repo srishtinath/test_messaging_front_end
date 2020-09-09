@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { Switch, Route, withRouter } from 'react-router';
 
-import ChatHome from './components/ChatHome'
-import ChatRoom from './components/ChatRoom'
 import Home from './components/Home'
 
 import './App.css';
@@ -12,9 +10,7 @@ const apiUrl = 'http://localhost:3000'
 
 function App(props) {
 
-  const [currentRoom, setCurrentRoom] = useState({})
   const [token, setToken] = useState("")
-  const [showChats, setShowChats] = useState(false)
 
   useEffect(() =>{
     if (localStorage.token){
