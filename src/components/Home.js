@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import {withRouter} from 'react-router';
+import ChatHome from './ChatHome';
+import { useHistory } from "react-router-dom";
 
-const Home = () => {
+
+const Home = (props) => {
+    let history = useHistory();
+
+    useEffect(() => {
+        console.log(localStorage.token)
+    }, [])
+
+    const showUserForm = (e) => {
+        history.push(`/${e.target.value}`)
+    }
+
     return ( 
+        <>
+        {/* {localStorage.token ? 
+        <ChatHome />
+        :  */}
         <div>
             Home page
-            <button>Login</button>
-            <button>Sign up</button>
+            <button onClick={showUserForm} value="login">Login</button>
+            <button onClick={showUserForm} value="register">Register</button>
         </div>
+        {/* } */}
+        </>
      );
 }
  
-export default Home;
+export default withRouter(Home);
