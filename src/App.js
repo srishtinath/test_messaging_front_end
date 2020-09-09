@@ -39,6 +39,7 @@ function App(props) {
   }
 
   const handleLoginSubmit = (userInfo) => {
+    console.log(userInfo)
     console.log("Login form has been submitted")
     fetch(`${apiUrl}/users/login`, {
             method: "POST",
@@ -49,6 +50,7 @@ function App(props) {
         })
     .then(r => r.json())
     .then(handleFormResponse)
+    
   }
 
   const handleRegisterSubmit = (userInfo) => {
@@ -69,7 +71,6 @@ function App(props) {
     if (resp.message){
       alert(resp.message)
     } else {
-      console.log(resp)
       localStorage.token = resp.token
       setToken(resp.token)
       props.history.push('/home')

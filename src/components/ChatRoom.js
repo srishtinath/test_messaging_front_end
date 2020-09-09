@@ -64,7 +64,14 @@ function renderMessage(messageObject) {
     messagesListDiv.prepend(messageDiv);
 }
 
-const ChatRoom = () => {
+
+
+const ChatRoom = (props) => {
+
+    const gobackmenu = () => {
+        props.setEnter(false)
+    }
+    
     createChatRoomWebsocketConnection()
     return ( 
         <div>
@@ -78,6 +85,7 @@ const ChatRoom = () => {
 
             </div>
         </div>
+        <button onClick={gobackmenu}>Go Back</button>
         </div>
      );
 }
