@@ -6,8 +6,7 @@ class CreateAccount extends Component {
         this.state = {
             username: '',
             password: '',
-            passwordConfirmation: '',
-            avatar: {}
+            passwordConfirmation: ''
         }
     }
 
@@ -20,7 +19,7 @@ class CreateAccount extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
         if (this.state.password === this.state.passwordConfirmation) {
-            fetch('http://localhost:3000/users', {
+            fetch('http://localhost:3000/users/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -54,4 +53,4 @@ class CreateAccount extends Component {
         }
 }
 
-export default CreateAccount
+export default CreateAccount;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 class Login extends Component {
     constructor(){
@@ -15,35 +16,40 @@ class Login extends Component {
         })
     }
 
-    handleSubmit = (e) => {
+    handleLoginSubmit = (e) => {
         e.preventDefault()
-        fetch('http://localhost:3000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
-            })    
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.authenticated) {
-                localStorage.setItem('jwt_token', data.token)
-                this.props.updateCurrentUser(data.user.data)
-            } else {
-                alert('Password/Username combination not found')
-            }   
-        })
+        console.log("Login form has been submitted")
+        fetch("http://localhost:3000/users/login", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: this.state.username,
+                    password: this.state.password
+                })
+            })
+        .then(r => r.json())
+        .then(this.handleLoginResponse)
+    }
+
+    handleLoginResponse = (resp) => {
+        if (resp.message){
+          alert(resp.message)
+        } else {
+          localStorage.token = resp.token
+          this.setState({
+            token: resp.token
+          })
+          this.props.history.push('/')
+      }
     }
 
     render() {
         return (
             <div>
                 <h3>Login</h3>
-                <form onSubmit={(e) => this.handleSubmit(e)} >
+                <form onSubmit={(e) => this.handleLoginSubmit(e)} >
                     <input type='text' name='username' value={this.state.username} onChange={(e) => this.handleChange(e)} placeholder='username' />
                     <input type='password' name='password' onChange={(e) => this.handleChange(e)} placeholder='password' />
                     <input type='submit' value='Login' />
@@ -53,4 +59,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default withRouter(Login)

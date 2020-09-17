@@ -8,10 +8,11 @@ const NavBar = (props) => {
                 <ul>
                     <li><Link to='/' >Home</Link></li>
                     <li><Link to='/rooms'>Rooms</Link></li>
-                    { props.currentUser ? (
+                    { localStorage.token ? (
                         <Fragment>
                             <Link to='/'><li onClick={props.logout} >Logout</li></Link>
-                            <li>Welcome, {props.currentUser.attributes.username}</li>
+                            <li>Welcome!</li>
+                                {/* , {props.currentUser.attributes.username}</li> */}
                         </Fragment>
                     ) : (
                         <Fragment>

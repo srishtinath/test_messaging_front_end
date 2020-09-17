@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
-import NavBar from './Components/NavBar';
-import Home from './Components/Home';
-import Login from './Components/Login';
-import CreateAccount from './Components/CreateAccount';
-import Profile from './Components/Profile';
-import NotFound from './Components/NotFound';
-import Rooms from './Components/Rooms';
-import RoomShow from './Components/RoomShow';
+import NavBar from './components/NavBar';
+import Home from './components/Home';
+import Login from './components/Login';
+import CreateAccount from './components/CreateAccount';
+import Profile from './components/Profile';
+import NotFound from './components/NotFound';
+import Rooms from './components/Rooms';
+import RoomShow from './components/RoomShow';
 
 class App extends Component {
   constructor() {
@@ -25,19 +25,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let token = localStorage.getItem('jwt_token')
-    if (token) {
-      fetch('http://localhost:3000/profile', {
-        headers: { "Authentication": `Bearer ${token}` }
+    if (localStorage.token){
+      fetch("http://localhost:3000/users/stay_logged_in", {
+        headers: {
+          "Authorization": localStorage.token
+        }
       })
-      .then(response => response.json())
-      .then(result => {
-        this.setState({
-        currentUser: result.data
-        })
-      })
+      .then(r => r.json())
+      .then(console.log)
     }
-    fetch('http://localhost:3000/rooms')
+
+    fetch('http://localhost:3000/chat_rooms')
     .then(resp => resp.json())
     .then(result => {
       this.setState({
@@ -46,6 +44,7 @@ class App extends Component {
     })
   }
 
+
   updateCurrentUser = (data) => {
     this.setState({
       currentUser: data
@@ -53,7 +52,7 @@ class App extends Component {
   }
 
   logout = () => {
-    localStorage.removeItem('jwt_token')
+    localStorage.token = ""
     this.setState({
       currentUser: null
     })
@@ -74,6 +73,7 @@ class App extends Component {
     fetch(`http://localhost:3000/rooms/${id}`)
     .then(response => response.json())
     .then(result => {
+      console.log(result)
       this.setState({
         currentRoom: {
           room: result.data,
