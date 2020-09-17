@@ -1,36 +1,56 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 
-const Login = (props) => {
+class Login extends Component {
+    constructor(){
+        super()
+        this.state = {
+            username: '',
+            password: ''
+        }
+    }
 
-    const [username, setName] = useState("")
-    const [password, setPassword] = useState("")
+    handleChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
 
-    const handleSubmit = (e) => {
+    handleSubmit = (e) => {
         e.preventDefault()
-        props.handleSubmit({username, password})
+        fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                username: this.state.username,
+                password: this.state.password
+            })    
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.authenticated) {
+                localStorage.setItem('jwt_token', data.token)
+                this.props.updateCurrentUser(data.user.data)
+            } else {
+                alert('Password/Username combination not found')
+            }   
+        })
     }
 
-    const handleName = (e) => {
-        setName(e.target.value)
+    render() {
+        return (
+            <div>
+                <h3>Login</h3>
+                <form onSubmit={(e) => this.handleSubmit(e)} >
+                    <input type='text' name='username' value={this.state.username} onChange={(e) => this.handleChange(e)} placeholder='username' />
+                    <input type='password' name='password' onChange={(e) => this.handleChange(e)} placeholder='password' />
+                    <input type='submit' value='Login' />
+                </form>
+            </div>
+        )
     }
-
-    const handlePassword = (e) => {
-        setPassword(e.target.value)
-    }
-
-    return ( <>
-        <div className="login-form">
-            <h1>{props.formName}</h1>
-            <form onSubmit={handleSubmit} >
-                <input type="text" name="name" value={username} onChange={handleName} placeholder="Enter username"></input>
-                <input type="password" name="password" value={password} onChange={handlePassword} placeholder="Enter password"></input>
-                <input type="submit"/>
-            </form>
-
-            <br></br>
-        </div>
-
-        </> );
 }
- 
-export default Login;
+
+export default Login
